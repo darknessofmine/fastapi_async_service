@@ -37,3 +37,6 @@ class DatabaseHelper:
         async with session() as sess:
             yield sess
             await session.remove()
+
+
+db_helper = DatabaseHelper()
