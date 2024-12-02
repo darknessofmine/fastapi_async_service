@@ -1,9 +1,6 @@
 from pydantic import BaseModel, ConfigDict
-from typing import TYPE_CHECKING
 
-
-if TYPE_CHECKING:
-    from core.models import Post
+from ..posts.schemas import PostRelated
 
 
 class UserBase(BaseModel):
@@ -12,8 +9,16 @@ class UserBase(BaseModel):
 
 class User(UserBase):
     id: int
-    posts: list["Post"] | None = None
+    posts: list[PostRelated] | None = None
 
     model_config = ConfigDict(
         from_attributes=True,
     )
+
+
+class UserCreate(UserBase):
+    ...
+
+
+class UserUpdate(UserCreate):
+    ...
