@@ -9,7 +9,7 @@ class UserBase(BaseModel):
 
 class User(UserBase):
     id: int
-    posts: list[PostRelated] | None = None
+    posts: list[PostRelated]
 
     model_config = ConfigDict(
         from_attributes=True,

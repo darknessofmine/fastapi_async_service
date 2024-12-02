@@ -14,6 +14,12 @@ async def create_user(session: AsyncSession,
     return user
 
 
+async def get_user_by_username(session: AsyncSession,
+                               username: str) -> User | None:
+    stmt = select(User).where(User.username == username)
+    return await session.scalar(stmt)
+
+
 async def get_users_with_posts(session: AsyncSession) -> Sequence[User]:
     stmt = (
         select(User)
@@ -23,7 +29,7 @@ async def get_users_with_posts(session: AsyncSession) -> Sequence[User]:
     return await session.scalars(stmt)
 
 
-async def get_user_with_posts_by_id(session: AsyncSession,
+async def get_user_by_id_with_posts(session: AsyncSession,
                                     user_id: int) -> User | None:
     stmt = (
         select(User)
@@ -33,7 +39,7 @@ async def get_user_with_posts_by_id(session: AsyncSession,
     return await session.scalar(stmt)
 
 
-async def get_user_with_posts_by_username(session: AsyncSession,
+async def get_user_by_username_with_posts(session: AsyncSession,
                                           username: str) -> User | None:
     stmt = (
         select(User)
