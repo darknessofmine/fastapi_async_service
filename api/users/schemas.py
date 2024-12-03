@@ -1,9 +1,6 @@
-from typing import TYPE_CHECKING
-
 from pydantic import BaseModel, ConfigDict
 
-if TYPE_CHECKING:
-    from api.posts import PostRelated
+from api.posts import PostRelated
 
 
 class UserBase(BaseModel):
