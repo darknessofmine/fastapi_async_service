@@ -59,7 +59,7 @@ async def update_user(
 
 @router.delete("/{user_id}")
 async def delete_user(
-    user: User = Depends(get_object_by_id(obj_type=models.User)),
+    user: User = Depends(get_object_by_id(model=models.User)),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     await crud.delete_user(user=user, session=session)

@@ -1,9 +1,9 @@
-from pydantic import BaseModel, ConfigDict
 from typing import TYPE_CHECKING
 
+from pydantic import BaseModel, ConfigDict
 
 if TYPE_CHECKING:
-    from core.models import User
+    from api.users import User
 
 
 class PostBase(BaseModel):
