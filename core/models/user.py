@@ -8,6 +8,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .post import Post
+    from .subscription import Subscription
 
 
 class User(Base):
@@ -16,3 +17,13 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(32), unique=True)
 
     posts: Mapped[list["Post"]] = relationship(back_populates="user")
+    sub_services: Mapped[list["Subscription"] | None] = relationship(
+        "Subscription",
+        back_populates="author",
+        foreign_keys="Subscription.author_id"
+    )
+    subscribers: Mapped[list["Subscription"] | None] = relationship(
+        "Subscription",
+        back_populates="sub",
+        foreign_keys="Subscription.sub_id"
+    )
