@@ -6,7 +6,7 @@ from core.models import Subscription
 
 async def is_subscribed(author_id: int,
                         sub_id: int,
-                        session: AsyncSession) -> Subscription:
+                        session: AsyncSession) -> Subscription | None:
     return await session.scalar(
         select(Subscription)
         .where(
