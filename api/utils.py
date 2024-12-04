@@ -8,6 +8,7 @@ from core.models import Base
 
 
 def get_object_by_id(model: Base):
+
     async def func(
             id: Annotated[int, Path],
             session: AsyncSession = Depends(db_helper.session_dependency),
@@ -19,4 +20,5 @@ def get_object_by_id(model: Base):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"{model.__name__} with id {id} not found!"
         )
+
     return func

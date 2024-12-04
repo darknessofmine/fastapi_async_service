@@ -17,8 +17,6 @@ async def create_user(
         session: AsyncSession = Depends(db_helper.session_dependency)
 ):
     new_user = await crud.create_user(session=session, user_in=user)
-    print("***" * 10)
-    print(new_user)
     return new_user
 
 
