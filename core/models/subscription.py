@@ -7,7 +7,10 @@ from .base import Base
 class Subscription(Base):
     __tablename__ = "subscriptions"
     __table_args__ = (
-        UniqueConstraint(),
+        UniqueConstraint(
+            "author_id", "sub_id",
+            name="unique_author_sub"
+        ),
     )
 
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
