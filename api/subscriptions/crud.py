@@ -4,9 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Subscription
 
 
-async def is_subscribed(author_id: int,
-                        sub_id: int,
-                        session: AsyncSession) -> Subscription | None:
+async def get_subscription(author_id: int,
+                           sub_id: int,
+                           session: AsyncSession) -> Subscription | None:
     return await session.scalar(
         select(Subscription)
         .where(
@@ -25,7 +25,7 @@ async def subscribe(author_id: int,
     return subscription
 
 
-async def unsub(subscription: Subscription,
-                session: AsyncSession) -> None:
+async def delete_subscription(subscription: Subscription,
+                              session: AsyncSession) -> None:
     await session.delete(subscription)
     await session.commit()
