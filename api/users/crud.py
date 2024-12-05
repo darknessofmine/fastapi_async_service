@@ -20,6 +20,12 @@ async def get_user_by_username(session: AsyncSession,
     return await session.scalar(stmt)
 
 
+async def get_user_by_id(session: AsyncSession,
+                         user_id: int) -> User | None:
+    stmt = select(User).where(User.id == user_id)
+    return await session.scalar(stmt)
+
+
 async def get_users_with_posts(session: AsyncSession) -> Sequence[User]:
     stmt = (
         select(User)

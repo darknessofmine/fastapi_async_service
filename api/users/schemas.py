@@ -17,7 +17,7 @@ class User(UserBase):
 
 
 class UserCreate(UserBase):
-    ...
+    password: str
 
 
 class UserUpdate(UserCreate):
@@ -25,4 +25,8 @@ class UserUpdate(UserCreate):
 
 
 class UserLogin(UserBase):
-    passworld: str
+    password: str
+
+
+class UserResponse(UserBase):
+    id: str
