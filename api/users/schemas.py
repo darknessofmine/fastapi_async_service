@@ -22,3 +22,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(UserCreate):
     ...
+
+
+class UserLogin(UserBase):
+    passworld: str

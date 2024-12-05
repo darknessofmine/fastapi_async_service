@@ -13,7 +13,7 @@ def encode_jwt(
 ):
     to_encode = payload.copy()
     now = datetime.datetime.now(datetime.timezone.utc)
-    to_encode.update(exp=now + expire_minutes)
+    to_encode.update(exp=now + datetime.timedelta(minutes=expire_minutes))
     encoded = jwt.encode(
         payload=to_encode,
         key=private_key,
