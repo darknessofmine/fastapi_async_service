@@ -16,43 +16,44 @@ async def create_user(session: AsyncSession,
 
 async def get_user_by_username(session: AsyncSession,
                                username: str) -> User | None:
-    stmt = select(User).where(User.username == username)
-    return await session.scalar(stmt)
+    return await session.scalar(
+        select(User)
+        .where(User.username == username)
+    )
 
 
 async def get_user_by_id(session: AsyncSession,
                          user_id: int) -> User | None:
-    stmt = select(User).where(User.id == user_id)
-    return await session.scalar(stmt)
+    return await session.scalar(
+        select(User)
+        .where(User.id == user_id)
+    )
 
 
 async def get_users_with_posts(session: AsyncSession) -> Sequence[User]:
-    stmt = (
+    return await session.scalars(
         select(User)
         .options(selectinload(User.posts))
         .order_by(User.id)
     )
-    return await session.scalars(stmt)
 
 
 async def get_user_by_id_with_posts(session: AsyncSession,
                                     user_id: int) -> User | None:
-    stmt = (
+    return await session.scalar(
         select(User)
         .where(User.id == user_id)
         .options(joinedload(User.posts))
     )
-    return await session.scalar(stmt)
 
 
 async def get_user_by_username_with_posts(session: AsyncSession,
                                           username: str) -> User | None:
-    stmt = (
+    return await session.scalar(
         select(User)
         .where(User.username == username)
         .options(joinedload(User.posts))
     )
-    return await session.scalar(stmt)
 
 
 async def update_user(session: AsyncSession,

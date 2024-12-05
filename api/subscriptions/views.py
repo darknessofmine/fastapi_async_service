@@ -2,27 +2,33 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
+from api.auth import utils as auth_utils
 from core.db_helper import db_helper
 
 
 router = APIRouter(tags=["subscription"])
 
 
-@router.post("/{user_id}/subscribe")
+@router.post("/{author_id}/subscribe")
 async def subscribe(
-    user_id: int,
-    sub_id: int,
+    author_id: int,
+    payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
+    user_id = payload.get("id")
+    if user_id == author_id:
+        return {
+            "message": "You can't subscribe yourself!"
+        }
     is_subscribed = await crud.get_subscription(
-        author_id=user_id,
-        sub_id=sub_id,
+        author_id=author_id,
+        sub_id=user_id,
         session=session,
     )
     if is_subscribed is None:
         return await crud.subscribe(
-            author_id=user_id,
-            sub_id=sub_id,
+            author_id=author_id,
+            sub_id=user_id,
             session=session,
         )
     return {
@@ -30,15 +36,16 @@ async def subscribe(
     }
 
 
-@router.post("/{user_id}/unsub")
+@router.post("/{author_id}/unsub")
 async def unsub(
-    user_id: int,
-    sub_id: int,
+    author_id: int,
+    payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
+    user_id = payload.get("id")
     subscription = await crud.get_subscription(
-        author_id=user_id,
-        sub_id=sub_id,
+        author_id=author_id,
+        sub_id=user_id,
         session=session,
     )
     if subscription is not None:

@@ -9,11 +9,6 @@ from api.users import schemas
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.get("/login")
-def auth_login():
-    ...
-
-
 @router.post("/login", response_model=TokenInfo)
 def auth_login_get_jwt(
     user: schemas.UserLogin = Depends(auth_utils.validate_auth_user),
@@ -29,7 +24,7 @@ def auth_login_get_jwt(
     )
 
 
-@router.get("/logout")
+@router.post("/logout")
 def auth_logout():
     ...
 
