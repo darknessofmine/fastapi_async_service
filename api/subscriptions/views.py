@@ -20,12 +20,12 @@ async def subscribe(
         return {
             "message": "You can't subscribe yourself!"
         }
-    is_subscribed = await crud.get_subscription(
+    subscription = await crud.get_subscription(
         author_id=author_id,
         sub_id=user_id,
         session=session,
     )
-    if is_subscribed is None:
+    if subscription is None:
         return await crud.subscribe(
             author_id=author_id,
             sub_id=user_id,
