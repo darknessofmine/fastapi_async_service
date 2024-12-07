@@ -17,6 +17,18 @@ async def create_post(session: AsyncSession,
     return post
 
 
+async def get_post_by_id(session: AsyncSession,
+                         post_id: int) -> Post | None:
+    return await session.scalar(
+        select(Post)
+        .where(Post.id == post_id)
+        .options(
+            joinedload(Post.user)
+            .defer(User.password)
+        )
+    )
+
+
 async def get_posts_with_authors(session: AsyncSession) -> Sequence[Post]:
     stmt = (
         select(Post)
@@ -26,9 +38,11 @@ async def get_posts_with_authors(session: AsyncSession) -> Sequence[Post]:
     return await session.scalars(stmt)
 
 
-async def get_post_by_id_with_author(session: AsyncSession,
-                                     post_id: int,
-                                     username: str) -> Post | None:
+async def get_post_by_id_and_username_with_author(
+        session: AsyncSession,
+        post_id: int,
+        username: str
+) -> Post | None:
     return await session.scalar(
         select(Post)
         .where(and_(

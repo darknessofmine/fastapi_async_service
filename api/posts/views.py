@@ -3,8 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.auth import utils as auth_utils
 from api.posts import crud
+from api.posts import utils as post_utils
 from api.posts import schemas as schemas
 from core.db_helper import db_helper
+from core.models import Post
 
 
 router = APIRouter(tags=["posts"])
@@ -30,7 +32,7 @@ async def get_post(
     post_id: int,
     session: AsyncSession = Depends(db_helper.session_dependency)
 ):
-    post = await crud.get_post_by_id_with_author(
+    post = await crud.get_post_by_id_and_username_with_author(
         session=session,
         post_id=post_id,
         username=username
@@ -41,3 +43,23 @@ async def get_post(
             detail="Post not found. Please make sure the url is correct."
         )
     return post
+
+
+@router.put("/posts/{post_id}")
+async def update_post(
+    post_in: schemas.PostUpdate,
+    post: Post = Depends(post_utils.get_post_by_id),
+    payload: dict = Depends(auth_utils.get_current_token_payload),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    username = payload.get("sub")
+    if post.user.username != username:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Post can be changed only by its author."
+        )
+    return await crud.update_post(
+        post=post,
+        post_update=post_in,
+        session=session,
+    )
