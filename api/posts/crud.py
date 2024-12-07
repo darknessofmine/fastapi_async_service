@@ -1,4 +1,4 @@
-from sqlalchemy import select, Sequence
+from sqlalchemy import select, Sequence, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -31,10 +31,10 @@ async def get_post_by_id_with_author(session: AsyncSession,
                                      username: str) -> Post | None:
     return await session.scalar(
         select(Post)
-        .where(
-            Post.id == post_id
-            and Post.user.has(username=username)
-        )
+        .where(and_(
+            Post.user.has(username=username),
+            (Post.id == post_id)
+        ))
         .options(
             joinedload(Post.user)
             .defer(User.password)

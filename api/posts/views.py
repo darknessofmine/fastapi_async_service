@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends, Form, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.auth import utils as auth_utils
@@ -30,8 +30,14 @@ async def get_post(
     post_id: int,
     session: AsyncSession = Depends(db_helper.session_dependency)
 ):
-    return await crud.get_post_by_id_with_author(
+    post = await crud.get_post_by_id_with_author(
         session=session,
         post_id=post_id,
         username=username
     )
+    if post is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Post not found. Please make sure the url is correct."
+        )
+    return post
