@@ -29,4 +29,4 @@ class UserLogin(UserBase):
 
 
 class UserResponse(UserBase):
-    id: str
+    id: int

@@ -3,13 +3,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from . import schemas
-from core.models import Post
+from core.models import Post, User
 
 
 async def create_post(session: AsyncSession,
-                      post_in: schemas.PostCreate) -> Post | None:
-    post = Post(**post_in.model_dump())
-    session.add(Post)
+                      post_in: schemas.PostCreate,
+                      author_id: int) -> Post | None:
+    post_dict = post_in.model_dump()
+    post_dict.update({"user_id": author_id})
+    post = Post(**post_dict)
+    session.add(post)
     await session.commit()
     return post
 
@@ -24,11 +27,18 @@ async def get_posts_with_authors(session: AsyncSession) -> Sequence[Post]:
 
 
 async def get_post_by_id_with_author(session: AsyncSession,
-                                     post_id: int) -> Post | None:
+                                     post_id: int,
+                                     username: str) -> Post | None:
     return await session.scalar(
         select(Post)
-        .where(Post.id == post_id)
-        .options(joinedload(Post.user))
+        .where(
+            Post.id == post_id
+            and Post.user.has(username=username)
+        )
+        .options(
+            joinedload(Post.user)
+            .defer(User.password)
+        )
     )
 
 
