@@ -1,7 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String
+from sqlalchemy.sql.functions import now
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -14,10 +15,7 @@ class Comment(Base):
     __tablename__ = "comments"
 
     text: Mapped[str] = mapped_column(String(1000), nullable=False)
-    created: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc),
-        server_default=datetime.now(timezone.utc),
-    )
+    created: Mapped[datetime] = mapped_column(server_default=now())
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
 
