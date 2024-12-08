@@ -22,4 +22,4 @@ class Comment(Base):
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
 
     user: Mapped["User"] = relationship()
-    post: Mapped["Post"] = relationship()
+    post: Mapped["Post"] = relationship(back_populates="comments")

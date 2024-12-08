@@ -7,7 +7,7 @@ from .base import Base
 
 
 if TYPE_CHECKING:
-    from .user import User
+    from core.models import Comment, User
 
 
 class Post(Base):
@@ -22,3 +22,4 @@ class Post(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
     user: Mapped["User"] = relationship(back_populates="posts")
+    comments: Mapped[list["Comment"] | None] = relationship()
