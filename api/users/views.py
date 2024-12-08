@@ -3,8 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
 from .schemas import User, UserCreate, UserUpdate
-from api.utils import get_object_by_id
-from core import models
+from api.auth import utils as auth_utils
 from core.db_helper import db_helper
 
 
@@ -34,7 +33,7 @@ async def get_user_by_username(
     raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User with username {username} not found!"
-        )
+    )
 
 
 @router.get("/", response_model=list[User])
@@ -61,9 +60,21 @@ async def update_user(
     )
 
 
-@router.delete("/{user_id}")
+@router.delete("/{username}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
-    user: User = Depends(get_object_by_id(model=models.User)),
+    username: str,
+    payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
-    await crud.delete_user(user=user, session=session)
+    current_user_name = payload.get("sub")
+    if current_user_name != username:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User can be deleted only by themselves."
+        )
+    current_user_id = payload.get("id")
+    user = await crud.get_user_by_id(
+        user_id=current_user_id,
+        session=session
+    )
+    return await crud.delete_user(user=user, session=session)
