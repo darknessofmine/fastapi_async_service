@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.auth import utils as auth_utils
 from api.posts import crud
 from api.posts import utils as post_utils
-from api.posts import schemas as schemas
+from api.posts import schemas
 from core.db_helper import db_helper
 from core.models import Post
 
@@ -61,5 +61,16 @@ async def update_post(
     return await crud.update_post(
         post=post,
         post_update=post_in,
+        session=session,
+    )
+
+
+@router.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_post(
+    post: Post = Depends(post_utils.get_post_by_id),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    return await crud.delete_post(
+        post=post,
         session=session,
     )
