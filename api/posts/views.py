@@ -68,8 +68,15 @@ async def update_post(
 @router.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(
     post: Post = Depends(post_utils.get_post_by_id),
+    payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
+    username = payload.get("sub")
+    if post.user.username != username:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Post can be deleted only by its author."
+        )
     return await crud.delete_post(
         post=post,
         session=session,
