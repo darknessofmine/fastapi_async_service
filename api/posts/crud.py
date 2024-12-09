@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from . import schemas
-from core.models import Comment, Post, User
+from core.models import Post
 
 
 async def create_post(session: AsyncSession,
@@ -24,7 +24,6 @@ async def get_post_by_id(session: AsyncSession,
         .where(Post.id == post_id)
         .options(
             joinedload(Post.user)
-            .defer(User.password)
         )
     )
 
@@ -50,10 +49,8 @@ async def get_post_by_id_and_username_with_author(
             (Post.id == post_id)
         ))
         .options(
-            joinedload(Post.user)
-            .defer(User.password),
+            joinedload(Post.user),
             joinedload(Post.comments)
-            .defer(Comment.post_id)
         )
     )
 

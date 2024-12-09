@@ -17,7 +17,7 @@ class Comment(Base):
     text: Mapped[str] = mapped_column(String(1000), nullable=False)
     created: Mapped[datetime] = mapped_column(server_default=now())
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
+    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), deferred=True)
 
     user: Mapped["User"] = relationship()
     post: Mapped["Post"] = relationship(back_populates="comments")

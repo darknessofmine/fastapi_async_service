@@ -35,7 +35,7 @@ async def get_post_by_id_and_username(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=(
-                "Post not found. Please make sure url you're using is correct"
+                "Post not found. Please make sure url you're using is correct."
             )
         )
     return post
