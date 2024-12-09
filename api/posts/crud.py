@@ -51,7 +51,22 @@ async def get_post_by_id_and_username_with_author(
         ))
         .options(
             joinedload(Post.user)
-            .defer(User.password)
+            .defer(User.password),
+            joinedload(Post.comments)
+        )
+    )
+
+
+async def get_post_by_id_and_username(
+        session: AsyncSession,
+        post_id: int,
+        username: str
+) -> Post | None:
+    return await session.scalar(
+        select(Post)
+        .where(
+            and_(Post.user.has(username=username),
+                 Post.id == post_id)
         )
     )
 
