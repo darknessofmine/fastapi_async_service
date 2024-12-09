@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict
 
+from api.comments.schemas import CommentResponse
+
 if TYPE_CHECKING:
     from api.users import User
 
@@ -35,3 +37,4 @@ class PostUpdatePartial(PostCreate):
 
 class PostRelated(PostBase):
     id: int
+    comments: list["CommentResponse"]

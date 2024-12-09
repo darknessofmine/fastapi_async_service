@@ -1,8 +1,11 @@
 from datetime import datetime
+# from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
 
-from api.users.schemas import UserResponse
+
+# if TYPE_CHECKING:
+#     from api.users.schemas import UserResponse
 
 
 class CommentBase(BaseModel):
@@ -19,5 +22,5 @@ class CommentUpdate(CommentCreate):
 
 class CommentResponse(CommentBase):
     id: int
-    user: "UserResponse"
+    # user: UserResponse
     created: datetime

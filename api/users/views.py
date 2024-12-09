@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
-from .schemas import User, UserCreate, UserUpdate
+from .schemas import UserCreate, UserUpdate
 from api.auth import utils as auth_utils
 from core.db_helper import db_helper
 
@@ -19,7 +19,7 @@ async def create_user(
     return new_user
 
 
-@router.get("/{username}", response_model=User)
+@router.get("/{username}")
 async def get_user_by_username(
     username: str,
     session: AsyncSession = Depends(db_helper.session_dependency)
@@ -36,11 +36,12 @@ async def get_user_by_username(
     )
 
 
-@router.get("/", response_model=list[User])
+@router.get("/")
 async def get_users_multiple(
     session: AsyncSession = Depends(db_helper.session_dependency)
 ):
-    return await crud.get_users_with_posts(session=session)
+    users = await crud.get_users_with_posts(session=session)
+    return users.all()
 
 
 @router.put("/{username}")

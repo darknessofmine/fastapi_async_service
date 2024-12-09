@@ -15,7 +15,11 @@ class User(Base):
     __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(String(32), unique=True)
-    password: Mapped[str] = mapped_column(String(50), nullable=False)
+    password: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        deferred=True,
+    )
 
     posts: Mapped[list["Post"]] = relationship(back_populates="user")
     sub_services: Mapped[list["Subscription"] | None] = relationship(

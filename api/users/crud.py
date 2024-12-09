@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import schemas
-from core.models import User
+from core.models import Comment, User, Post
 
 
 async def create_user(session: AsyncSession,
@@ -33,8 +33,10 @@ async def get_user_by_id(session: AsyncSession,
 async def get_users_with_posts(session: AsyncSession) -> Sequence[User]:
     return await session.scalars(
         select(User)
-        .options(selectinload(User.posts))
-        .order_by(User.id)
+        .options(
+            selectinload(User.posts)
+            .selectinload(Post.comments).defer(Comment.post_id)
+        )
     )
 
 
@@ -52,7 +54,10 @@ async def get_user_by_username_with_posts(session: AsyncSession,
     return await session.scalar(
         select(User)
         .where(User.username == username)
-        .options(joinedload(User.posts))
+        .options(
+            joinedload(User.posts)
+            .selectinload(Post.comments).defer(Comment.post_id)
+        )
     )
 
 
