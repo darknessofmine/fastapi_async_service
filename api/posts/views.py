@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Form, HTTPException, status
+from fastapi import APIRouter, Depends, Form, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.auth import utils as auth_utils
@@ -12,7 +12,7 @@ from core.models import Post
 router = APIRouter(tags=["posts"])
 
 
-@router.post("/create")
+@router.post("/create", status_code=status.HTTP_201_CREATED)
 async def create_post(
     post: schemas.PostCreate = Form(),
     payload: dict = Depends(auth_utils.get_current_token_payload),
@@ -54,13 +54,8 @@ async def delete_post(
     payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
-    username = payload.get("sub")
-    if post.user.username != username:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Post can be deleted only by its author."
-        )
-    return await crud.delete_post(
+    post_utils.user_is_author_or_403(post=post, payload=payload)
+    await crud.delete_post(
         post=post,
         session=session,
     )

@@ -12,11 +12,9 @@ from core.models import Comment, Post
 router = APIRouter(tags=["comments"])
 
 
-@router.post(
-    "/{username}/{post_id}/comments/create",
-    response_model=schemas.CommentResponse,
-    status_code=status.HTTP_201_CREATED,
-)
+@router.post("/{username}/{post_id}/comments/create",
+             response_model=schemas.CommentResponse,
+             status_code=status.HTTP_201_CREATED)
 async def create_comment(
     comment_in: schemas.CommentCreate,
     post: Post = Depends(post_utils.get_post_by_id_and_username),
@@ -32,10 +30,8 @@ async def create_comment(
     )
 
 
-@router.patch(
-    "/comments/{comment_id}",
-    response_model=schemas.CommentResponse,
-)
+@router.patch("/comments/{comment_id}",
+              response_model=schemas.CommentResponse)
 async def update_comment(
     comment_in: schemas.CommentUpdate,
     comment: Comment = Depends(comment_utils.get_comment_or_404),

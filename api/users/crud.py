@@ -14,6 +14,14 @@ async def create_user(session: AsyncSession,
     return user
 
 
+async def get_user_by_username(session: AsyncSession,
+                               username: str) -> User | None:
+    return await session.scalar(
+        select(User)
+        .where(User.username == username)
+    )
+
+
 async def get_user_by_username_with_password(
     session: AsyncSession,
     username: str,
