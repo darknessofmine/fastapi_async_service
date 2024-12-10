@@ -40,12 +40,7 @@ async def update_post(
     payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
-    username = payload.get("sub")
-    if post.user.username != username:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Post can be changed only by its author."
-        )
+    post_utils.user_is_author_or_403(post=post, payload=payload)
     return await crud.update_post(
         post=post,
         post_update=post_in,

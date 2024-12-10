@@ -1,5 +1,5 @@
 from sqlalchemy import select, Sequence
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import joinedload, load_only, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import schemas
@@ -14,11 +14,16 @@ async def create_user(session: AsyncSession,
     return user
 
 
-async def get_user_by_username(session: AsyncSession,
-                               username: str) -> User | None:
+async def get_user_by_username_with_password(
+    session: AsyncSession,
+    username: str,
+) -> User | None:
     return await session.scalar(
         select(User)
         .where(User.username == username)
+        .options(
+            load_only(User.username, User.password)
+        )
     )
 
 

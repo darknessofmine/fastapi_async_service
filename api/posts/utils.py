@@ -39,3 +39,12 @@ async def get_post_by_id_and_username(
             )
         )
     return post
+
+
+def user_is_author_or_403(payload: dict, post: Post) -> None:
+    user_id = payload.get("id")
+    if user_id != post.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=("Post can be changed/deleted only by its author."),
+        )

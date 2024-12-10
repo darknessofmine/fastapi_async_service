@@ -6,7 +6,7 @@ from jwt.exceptions import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .jwt import utils as jwt_utils
-from api.users.crud import get_user_by_id, get_user_by_username
+from api.users import crud
 from api.users import schemas
 from core.config import settings
 from core.db_helper import db_helper
@@ -29,7 +29,10 @@ async def validate_auth_user(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid username or password!",
     )
-    user = await get_user_by_username(session=session, username=username)
+    user = await crud.get_user_by_username_with_password(
+        session=session,
+        username=username,
+    )
     if not user:
         raise unauthed_exc
 
@@ -64,7 +67,7 @@ async def get_current_user(
         )
 
     user_id = payload.get("id")
-    user = await get_user_by_id(session=session, user_id=user_id)
+    user = await crud.get_user_by_id(session=session, user_id=user_id)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,7 +88,10 @@ async def get_current_user_for_refresh(
         )
 
     username = payload.get("sub")
-    user = await get_user_by_username(session=session, username=username)
+    user = await crud.get_user_by_username_with_password(
+        session=session,
+        username=username,
+    )
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
