@@ -23,14 +23,14 @@ async def create_user(
     return new_user
 
 
-@router.get("/{username}")
+@router.get("/{username}", status_code=status.HTTP_200_OK)
 async def get_user_by_username(
     user: User = Depends(user_utils.get_user_with_posts_by_username_or_404),
 ):
     return user
 
 
-@router.get("/")
+@router.get("/", status_code=status.HTTP_200_OK)
 async def get_users_multiple(
     session: AsyncSession = Depends(db_helper.session_dependency)
 ):
@@ -38,7 +38,7 @@ async def get_users_multiple(
     return users.all()
 
 
-@router.put("/{username}")
+@router.put("/{username}", status_code=status.HTTP_200_OK)
 async def update_user(
     username: str,
     user_update: UserUpdate,

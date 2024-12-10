@@ -31,7 +31,8 @@ async def create_comment(
 
 
 @router.patch("/comments/{comment_id}",
-              response_model=schemas.CommentResponse)
+              response_model=schemas.CommentResponse,
+              status_code=status.HTTP_200_OK)
 async def update_comment(
     comment_in: schemas.CommentUpdate,
     comment: Comment = Depends(comment_utils.get_comment_or_404),

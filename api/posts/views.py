@@ -26,14 +26,14 @@ async def create_post(
     )
 
 
-@router.get("/{username}/{post_id}")
+@router.get("/{username}/{post_id}", status_code=status.HTTP_200_OK)
 async def get_post(
     post: Post = Depends(post_utils.get_post_by_id_and_username),
 ):
     return post
 
 
-@router.put("/posts/{post_id}")
+@router.put("/posts/{post_id}", status_code=status.HTTP_200_OK)
 async def update_post(
     post_in: schemas.PostUpdate,
     post: Post = Depends(post_utils.get_post_by_id),
