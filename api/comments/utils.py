@@ -8,7 +8,7 @@ from core.db_helper import db_helper
 from core.models import Comment
 
 
-async def get_comment(
+async def get_comment_or_404(
     comment_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> Comment:
@@ -30,5 +30,5 @@ def user_is_author_or_403(payload: dict, comment: Comment) -> None:
     if user_id != comment.user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=("Comment can be deleted only by its author."),
+            detail=("Comment can be changed/deleted only by its author."),
         )

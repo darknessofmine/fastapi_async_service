@@ -15,6 +15,7 @@ router = APIRouter(tags=["comments"])
 @router.post(
     "/{username}/{post_id}/comments/create",
     response_model=schemas.CommentResponse,
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_comment(
     comment_in: schemas.CommentCreate,
@@ -37,7 +38,7 @@ async def create_comment(
 )
 async def update_comment(
     comment_in: schemas.CommentUpdate,
-    comment: Comment = Depends(comment_utils.get_comment),
+    comment: Comment = Depends(comment_utils.get_comment_or_404),
     payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
@@ -51,7 +52,7 @@ async def update_comment(
 
 @router.delete("comments/{comment_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_comment(
-    comment: Comment = Depends(comment_utils.get_comment),
+    comment: Comment = Depends(comment_utils.get_comment_or_404),
     payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):

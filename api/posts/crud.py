@@ -66,6 +66,9 @@ async def get_post_by_id_and_username(
             and_(Post.user.has(username=username),
                  Post.id == post_id)
         )
+        .options(
+            joinedload(Post.user)
+        )
     )
 
 

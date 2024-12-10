@@ -28,20 +28,8 @@ async def create_post(
 
 @router.get("/{username}/{post_id}")
 async def get_post(
-    username: str,
-    post_id: int,
-    session: AsyncSession = Depends(db_helper.session_dependency)
+    post: Post = Depends(post_utils.get_post_by_id_and_username),
 ):
-    post = await crud.get_post_by_id_and_username_with_author(
-        session=session,
-        post_id=post_id,
-        username=username
-    )
-    if post is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Post not found. Please make sure the url is correct."
-        )
     return post
 
 
