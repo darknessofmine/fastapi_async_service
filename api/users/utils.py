@@ -53,8 +53,8 @@ async def get_user_with_posts_by_username_or_404(
 
 
 async def user_with_id_exists_or_404(
-    user_id: Annotated[int, Path],
-    session: AsyncSession = Depends(db_helper.session_dependency),
+    user_id: int,
+    session: AsyncSession,
 ) -> None:
     user = await crud.user_with_id_exists(user_id=user_id, session=session)
     if not user:

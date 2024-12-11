@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 
 from api.auth.views import router as auth_router
@@ -13,3 +14,11 @@ app.include_router(user_router)
 app.include_router(sub_router)
 app.include_router(post_router)
 app.include_router(comment_router)
+
+
+if __name__ == "__main__":
+    uvicorn.run(
+        app,
+        host="127.0.0.1",
+        port=8000,
+    )
