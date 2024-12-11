@@ -57,5 +57,5 @@ def user_is_curr_user_or_403(payload: dict, user: User) -> None:
     if current_user_id != user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=("You can't change this users profile!"),
+            detail=("You can't change this user's profile!"),
         )

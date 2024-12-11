@@ -20,7 +20,7 @@ async def get_comment_or_404(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=("Comment not found. "
-                    "Please make sure url you're using is correct.")
+                    "Please make sure url you're using is correct."),
         )
     return comment
 

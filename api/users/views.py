@@ -17,7 +17,7 @@ router = APIRouter(tags=["users"])
              status_code=status.HTTP_201_CREATED)
 async def create_user(
         user: UserCreate,
-        session: AsyncSession = Depends(db_helper.session_dependency)
+        session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     new_user = await crud.create_user(session=session, user_in=user)
     return new_user
@@ -32,7 +32,7 @@ async def get_user_by_username(
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def get_users_multiple(
-    session: AsyncSession = Depends(db_helper.session_dependency)
+    session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     users = await crud.get_users_with_posts(session=session)
     return users.all()
@@ -44,7 +44,7 @@ async def update_user(
     user_update: UserUpdate,
     user: User = Depends(user_utils.get_user_by_username_or_404),
     payload: dict = Depends(auth_utils.get_current_token_payload),
-    session: AsyncSession = Depends(db_helper.session_dependency)
+    session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     """DELETE `USERNAME` FROM FUNCTION PARAMS"""
     user_utils.user_is_curr_user_or_403(user=user, payload=payload)
