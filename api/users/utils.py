@@ -52,6 +52,18 @@ async def get_user_with_posts_by_username_or_404(
     return user
 
 
+async def user_with_id_exists_or_404(
+    user_id: Annotated[int, Path],
+    session: AsyncSession = Depends(db_helper.session_dependency),
+) -> None:
+    user = await crud.user_with_id_exists(user_id=user_id, session=session)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id '{user_id}' not found!",
+        )
+
+
 def user_is_curr_user_or_403(payload: dict, user: User) -> None:
     current_user_id = payload.get("id")
     if current_user_id != user.id:

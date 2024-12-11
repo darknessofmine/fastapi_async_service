@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from . import crud
 from . import utils as sub_utils
 from api.auth import utils as auth_utils
+from api.users import utils as user_utils
 from core.db_helper import db_helper
 from core.models import Subscription
 
@@ -18,6 +19,10 @@ async def subscribe(
     session: AsyncSession = Depends(db_helper.session_dependency),
     subscription: Subscription = Depends(sub_utils.get_subscription),
 ):
+    await user_utils.user_with_id_exists_or_404(
+        user_id=author_id,
+        session=session,
+    )
     user_id = payload.get("id")
     sub_utils.user_is_not_author_or_403(author_id=author_id, user_id=user_id)
     if subscription is not None:
@@ -39,6 +44,10 @@ async def unsub(
     session: AsyncSession = Depends(db_helper.session_dependency),
     subscription: Subscription = Depends(sub_utils.get_subscription),
 ):
+    await user_utils.user_with_id_exists_or_404(
+        user_id=author_id,
+        session=session,
+    )
     user_id = payload.get("id")
     sub_utils.user_is_not_author_or_403(author_id=author_id, user_id=user_id)
     if subscription is None:

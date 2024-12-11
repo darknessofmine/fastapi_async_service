@@ -1,4 +1,4 @@
-from sqlalchemy import select, Sequence
+from sqlalchemy import exists, select, Sequence
 from sqlalchemy.orm import joinedload, load_only, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -102,4 +102,13 @@ async def get_all_users_subbed_with_posts(
                 selectinload(Post.comments)
             )
         )
+    )
+
+
+async def user_with_id_exists(user_id: int, session: AsyncSession) -> bool:
+    return await session.scalar(
+        exists(
+            select(User)
+            .where(User.id == user_id)
+        ).select()
     )
