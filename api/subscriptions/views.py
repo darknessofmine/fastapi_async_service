@@ -25,9 +25,9 @@ async def subscribe(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are already subscribed!",
         )
-    await crud.subscribe(
+    return await crud.subscribe(
         author_id=author_id,
-        sub_id=user_id,
+        user_id=user_id,
         session=session,
     )
 

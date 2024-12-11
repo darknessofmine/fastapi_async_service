@@ -22,12 +22,12 @@ class User(Base):
     )
 
     posts: Mapped[list["Post"]] = relationship(back_populates="user")
-    sub_services: Mapped[list["Subscription"] | None] = relationship(
+    subscribers: Mapped[list["Subscription"] | None] = relationship(
         "Subscription",
         back_populates="author",
         foreign_keys="Subscription.author_id"
     )
-    subscribers: Mapped[list["Subscription"] | None] = relationship(
+    subscriptions: Mapped[list["Subscription"] | None] = relationship(
         "Subscription",
         back_populates="sub",
         foreign_keys="Subscription.sub_id"

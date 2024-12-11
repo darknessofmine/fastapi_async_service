@@ -23,7 +23,7 @@ class Subscription(Base):
 
     author: Mapped["User"] = relationship(
         "User",
-        back_populates="sub_services",
+        back_populates="subscriptions",
         foreign_keys=[author_id],
         lazy="joined",
     )

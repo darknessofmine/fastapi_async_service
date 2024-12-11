@@ -87,3 +87,19 @@ async def delete_user(session: AsyncSession,
                       user: User) -> None:
     await session.delete(user)
     await session.commit()
+
+
+async def get_all_users_subbed_with_posts(
+    user_id: int,
+    session: AsyncSession,
+) -> Sequence[User]:
+    return await session.scalars(
+        select(User)
+        .where(User.subscribers.any(sub_id=user_id))
+        .options(
+            selectinload(User.posts)
+            .options(
+                selectinload(Post.comments)
+            )
+        )
+    )
