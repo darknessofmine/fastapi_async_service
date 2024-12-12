@@ -25,19 +25,15 @@ async def validate_auth_user(
     password: str = Form(),
     session: AsyncSession = Depends(db_helper.session_dependency)
 ) -> User:
-    unauthed_exc = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid username or password!",
-    )
     user = await crud.get_user_by_username_with_password(
         session=session,
         username=username,
     )
     if not user:
-        raise unauthed_exc
-
-    if user.password != password:
-        raise unauthed_exc
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password!",
+        )
 
     return user
 
