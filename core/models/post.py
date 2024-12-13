@@ -7,7 +7,7 @@ from .base import Base
 
 
 if TYPE_CHECKING:
-    from core.models import Comment, User
+    from core.models import Comment, SubTier, User
 
 
 class Post(Base):
@@ -23,3 +23,4 @@ class Post(Base):
 
     user: Mapped["User"] = relationship(back_populates="posts")
     comments: Mapped[list["Comment"] | None] = relationship()
+    sub_tier: Mapped["SubTier"] = relationship(back_populates="post")

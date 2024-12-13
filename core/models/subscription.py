@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
 
 if TYPE_CHECKING:
-    from core.models import User
+    from core.models import SubTier, User
 
 
 class Subscription(Base):
@@ -32,4 +32,7 @@ class Subscription(Base):
         back_populates="subscribers",
         foreign_keys=[sub_id],
         lazy="joined",
+    )
+    sub_tier: Mapped["SubTier"] | None = relationship(
+        back_populates="subscription",
     )

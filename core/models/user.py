@@ -7,8 +7,7 @@ from .base import Base
 
 
 if TYPE_CHECKING:
-    from .post import Post
-    from .subscription import Subscription
+    from core.models import Post, Subscription, SubTier
 
 
 class User(Base):
@@ -32,3 +31,4 @@ class User(Base):
         back_populates="sub",
         foreign_keys="Subscription.sub_id"
     )
+    sub_tiers: Mapped[list["SubTier"] | None] = relationship()

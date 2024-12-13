@@ -1,8 +1,13 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey, String, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 from .base import Base
+
+if TYPE_CHECKING:
+    from core.models import Post, Subscription, User
 
 
 class SubTier(Base):
@@ -20,5 +25,11 @@ class SubTier(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
     subscription_id: Mapped[int] = mapped_column(
-        ForeignKey("subscriptions.id")
+        ForeignKey("subscriptions.id"),
+    )
+
+    user: Mapped["User"] = relationship(back_populates="sub_tiers")
+    post: Mapped["Post"] = relationship(back_populates="sub_tier")
+    subscription: Mapped["Subscription"] = relationship(
+        back_populates="sub_tier",
     )
