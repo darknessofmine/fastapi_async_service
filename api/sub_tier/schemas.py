@@ -7,11 +7,11 @@ class SubTierBase(BaseModel):
     price: str
 
 
-class CreateSubTier(SubTierBase):
+class SubTierCreate(SubTierBase):
     ...
 
 
-class UpdateSubTier(CreateSubTier):
+class SubTierUpdate(SubTierCreate):
     ...
 
 
