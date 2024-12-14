@@ -55,7 +55,4 @@ async def delete_post(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     post_utils.user_is_author_or_403(post=post, payload=payload)
-    await crud.delete_post(
-        post=post,
-        session=session,
-    )
+    await crud.delete_post(post=post, session=session)

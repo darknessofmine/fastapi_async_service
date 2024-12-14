@@ -43,3 +43,13 @@ async def update_sub_tier(
         sub_tier=sub_tier,
         session=session,
     )
+
+
+@router.delete("subscription/{sub_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_sub_tier(
+    sub_tier: SubTier = Depends(sub_tier_utils.get_sub_tier_or_404),
+    payload: dict = Depends(auth_utils.get_current_token_payload),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    sub_tier_utils.user_is_author_or_403(payload=payload, sub_tier=sub_tier)
+    await crud.delete_sub_tier(sub_tier=sub_tier, session=session)
