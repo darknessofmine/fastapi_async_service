@@ -18,8 +18,13 @@ async def get_subscription(author_id: int,
 
 async def subscribe(author_id: int,
                     user_id: int,
+                    sub_tier_id: int,
                     session: AsyncSession) -> Subscription:
-    subscription = Subscription(author_id=author_id, sub_id=user_id)
+    subscription = Subscription(
+        author_id=author_id,
+        sub_id=user_id,
+        sub_tier_id=sub_tier_id,
+    )
     session.add(subscription)
     await session.commit()
     return subscription

@@ -15,9 +15,6 @@ async def get_subscription(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> Subscription | None:
     user_id = payload.get("id")
-    print("***" * 10)
-    print(user_id)
-    print(author_id)
     return await crud.get_subscription(
         author_id=author_id,
         user_id=user_id,

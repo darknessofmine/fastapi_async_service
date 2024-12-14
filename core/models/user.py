@@ -24,11 +24,13 @@ class User(Base):
     subscribers: Mapped[list["Subscription"] | None] = relationship(
         "Subscription",
         back_populates="author",
-        foreign_keys="Subscription.author_id"
+        foreign_keys="Subscription.author_id",
     )
     subscriptions: Mapped[list["Subscription"] | None] = relationship(
         "Subscription",
         back_populates="sub",
-        foreign_keys="Subscription.sub_id"
+        foreign_keys="Subscription.sub_id",
     )
-    sub_tiers: Mapped[list["SubTier"] | None] = relationship()
+    sub_tiers: Mapped[list["SubTier"] | None] = relationship(
+        order_by="SubTier.price",
+    )

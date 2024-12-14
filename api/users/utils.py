@@ -52,16 +52,20 @@ async def get_user_with_posts_by_username_or_404(
     return user
 
 
-async def user_with_id_exists_or_404(
+async def get_user_by_id_or_404(
     user_id: int,
-    session: AsyncSession,
-) -> None:
-    user = await crud.user_with_id_exists(user_id=user_id, session=session)
+    session: AsyncSession
+) -> User | None:
+    user = await crud.get_user_by_id_with_sub_tiers(
+        user_id=user_id,
+        session=session,
+    )
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User with id '{user_id}' not found!",
         )
+    return user
 
 
 def user_is_curr_user_or_403(payload: dict, user: User) -> None:

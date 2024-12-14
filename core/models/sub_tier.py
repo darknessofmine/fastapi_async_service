@@ -23,9 +23,6 @@ class SubTier(Base):
     body: Mapped[str] = mapped_column(String(500))
     price: Mapped[int] = mapped_column(default=0)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    subscription_id: Mapped[int] = mapped_column(
-        ForeignKey("subscriptions.id"),
-    )
 
     user: Mapped["User"] = relationship(back_populates="sub_tiers")
     post: Mapped["Post"] = relationship(back_populates="sub_tier")

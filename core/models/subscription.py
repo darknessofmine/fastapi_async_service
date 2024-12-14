@@ -20,6 +20,7 @@ class Subscription(Base):
 
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     sub_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    sub_tier_id: Mapped[int] = mapped_column(ForeignKey("sub_tiers.id"))
 
     author: Mapped["User"] = relationship(
         "User",

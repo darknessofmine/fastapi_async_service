@@ -32,3 +32,16 @@ def user_is_author_or_403(payload: dict, sub_tier: SubTier) -> None:
             detail=("Subscription tier can be changed/deleted "
                     "only by its author."),
         )
+
+
+def author_owns_chosen_sub_tier_or_404(
+    sub_tiers: list[SubTier],
+    sub_tier_id: int,
+) -> None:
+    for sub_tier in sub_tiers:
+        if sub_tier.id == sub_tier_id:
+            return
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="User dosn't have this subscription.",
+    )
