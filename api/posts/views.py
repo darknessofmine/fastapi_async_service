@@ -48,6 +48,22 @@ async def update_post(
     )
 
 
+@router.patch("/posts/{post_id}", status_code=status.HTTP_200_OK)
+async def update_post_partial(
+    post_in: schemas.PostUpdate,
+    post: Post = Depends(post_utils.get_post_by_id),
+    payload: dict = Depends(auth_utils.get_current_token_payload),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    post_utils.user_is_author_or_403(post=post, payload=payload)
+    return await crud.update_post(
+        post=post,
+        post_update=post_in,
+        session=session,
+        partial=True,
+    )
+
+
 @router.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(
     post: Post = Depends(post_utils.get_post_by_id),

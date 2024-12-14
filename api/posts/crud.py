@@ -2,12 +2,12 @@ from sqlalchemy import select, Sequence, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from . import schemas
+from .schemas import PostCreate, PostUpdate, PostUpdatePartial
 from core.models import Post
 
 
 async def create_post(session: AsyncSession,
-                      post_in: schemas.PostCreate,
+                      post_in: PostCreate,
                       author_id: int) -> Post | None:
     post_dict = post_in.model_dump()
     post_dict.update({"user_id": author_id})
@@ -74,17 +74,9 @@ async def get_post_by_id_and_username(
 
 async def update_post(session: AsyncSession,
                       post: Post,
-                      post_update: schemas.PostUpdate) -> Post:
-    for key, value in post_update.model_dump().items():
-        setattr(post, key, value)
-    await session.commit()
-    return post
-
-
-async def update_post_partial(session: AsyncSession,
-                              post: Post,
-                              post_update: schemas.PostUpdatePartial) -> Post:
-    for key, value in post_update.model_dump(exclude_unset=True).items():
+                      post_update: PostUpdate | PostUpdatePartial,
+                      partial: bool = False) -> Post:
+    for key, value in post_update.model_dump(exclude_unset=partial).items():
         setattr(post, key, value)
     await session.commit()
     return post
