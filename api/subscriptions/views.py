@@ -45,7 +45,7 @@ async def subscribe(
     )
 
 
-@router.post("/{author_id}/unsub", status_code=status.HTTP_200_OK)
+@router.post("/{author_id}/unsubscribe", status_code=status.HTTP_200_OK)
 async def unsub(
     author_id: int,
     payload: dict = Depends(auth_utils.get_current_token_payload),
@@ -68,3 +68,35 @@ async def unsub(
         session=session,
     )
     return {"message": "You have successfully unsubscribed!"}
+
+
+@router.patch("/{author_id}/subscribe/change-tier",
+              status_code=status.HTTP_200_OK)
+async def change_subscription_tier(
+    author_id: int,
+    new_sub_tier_id: int,
+    payload: dict = Depends(auth_utils.get_current_token_payload),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+    subscription: Subscription = Depends(sub_utils.get_subscription)
+):
+    author = await user_utils.get_user_by_id_or_404(
+        user_id=author_id,
+        session=session,
+    )
+    sub_tier_utils.author_owns_chosen_sub_tier_or_404(
+        sub_tiers=author.sub_tiers,
+        sub_tier_id=new_sub_tier_id,
+    )
+    user_id = payload.get("id")
+    sub_utils.user_is_not_author_or_403(author_id=author_id, user_id=user_id)
+    if subscription is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=("To change your subscription level, "
+                    "you need to subscribe first!"),
+        )
+    return await crud.change_subscription_tier(
+        new_sub_tier_id=new_sub_tier_id,
+        subscription=subscription,
+        session=session,
+    )

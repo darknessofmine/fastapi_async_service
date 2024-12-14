@@ -34,3 +34,11 @@ async def delete_subscription(subscription: Subscription,
                               session: AsyncSession) -> None:
     await session.delete(subscription)
     await session.commit()
+
+
+async def change_subscription_tier(new_sub_tier_id: int,
+                                   subscription: Subscription,
+                                   session: AsyncSession) -> Subscription:
+    setattr(subscription, "sub_tier_id", new_sub_tier_id)
+    await session.commit()
+    return subscription
