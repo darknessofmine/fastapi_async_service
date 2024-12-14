@@ -1,11 +1,11 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from . import schemas
+from .schemas import SubTierCreate, SubTierUpdate, SubTierUpdatePartial
 from core.models import SubTier
 
 
-async def create_sub_tier(sub_tier_in: schemas.SubTierCreate,
+async def create_sub_tier(sub_tier_in: SubTierCreate,
                           user_id: int,
                           session: AsyncSession) -> SubTier:
     sub_tier_dict = sub_tier_in.model_dump()
@@ -24,10 +24,11 @@ async def get_sub_tier(sub_tier_id: int,
     )
 
 
-async def update_sub_tier(sub_tier_update: schemas.SubTierUpdate,
+async def update_sub_tier(sub_tier_upd: SubTierUpdate | SubTierUpdatePartial,
                           sub_tier: SubTier,
-                          session: AsyncSession) -> SubTier:
-    for key, value in sub_tier_update.model_dump().items():
+                          session: AsyncSession,
+                          partial: bool = False) -> SubTier:
+    for key, value in sub_tier_upd.model_dump(exclude_unset=partial).items():
         setattr(sub_tier, key, value)
     await session.commit()
     return sub_tier
