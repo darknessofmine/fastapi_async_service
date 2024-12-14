@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
 from . import utils as sub_utils
+from .schemas import SubscriptionResponse
 from api.auth import utils as auth_utils
 from api.users import utils as user_utils
 from core.db_helper import db_helper
@@ -12,7 +13,9 @@ from core.models import Subscription
 router = APIRouter(tags=["subscription"])
 
 
-@router.post("/{author_id}/subscribe", status_code=status.HTTP_200_OK)
+@router.post("/{author_id}/subscribe",
+             response_model=SubscriptionResponse,
+             status_code=status.HTTP_200_OK)
 async def subscribe(
     author_id: int,
     payload: dict = Depends(auth_utils.get_current_token_payload),
@@ -59,3 +62,4 @@ async def unsub(
         subscription=subscription,
         session=session,
     )
+    return {"message": "You have successfully unsubscribed!"}

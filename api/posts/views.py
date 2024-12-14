@@ -50,7 +50,7 @@ async def update_post(
 
 @router.patch("/posts/{post_id}", status_code=status.HTTP_200_OK)
 async def update_post_partial(
-    post_in: schemas.PostUpdate,
+    post_in: schemas.PostUpdatePartial,
     post: Post = Depends(post_utils.get_post_by_id),
     payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),

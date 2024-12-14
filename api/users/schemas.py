@@ -24,6 +24,11 @@ class UserUpdate(UserCreate):
     ...
 
 
+class UserUpdatePartial(UserUpdate):
+    username: str | None = None
+    password: str | None = None
+
+
 class UserLogin(UserBase):
     password: str
 

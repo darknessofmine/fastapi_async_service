@@ -1,8 +1,8 @@
-"""create sub_tiers table
+"""test
 
-Revision ID: 4316a1466778
+Revision ID: fa2fd38ee622
 Revises:
-Create Date: 2024-12-14 14:00:41.534898
+Create Date: 2024-12-14 14:53:40.842428
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '4316a1466778'
+revision: str = 'fa2fd38ee622'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -56,21 +56,18 @@ def upgrade() -> None:
         sa.Column('title', sa.String(length=100), nullable=False),
         sa.Column('text', sa.Text(), server_default='', nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=False),
-        sa.Column('sub_tier_id', sa.Integer(), nullable=False),
+        sa.Column('sub_tier_id', sa.Integer(), nullable=True),
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.ForeignKeyConstraint(['sub_tier_id'], ['sub_tiers.id'], ),
-        sa.ForeignKeyConstraint(
-            ['sub_tier_id'], ['sub_tiers.id'], name='fk_posts_sub_tier_id'),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_table(
         'comments',
         sa.Column('text', sa.String(length=1000), nullable=False),
-        sa.Column(
-            'created', sa.DateTime(),
-            server_default=sa.text('(CURRENT_TIMESTAMP)'),
-            nullable=False),
+        sa.Column('created', sa.DateTime(),
+                  server_default=sa.text('(CURRENT_TIMESTAMP)'),
+                  nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('post_id', sa.Integer(), nullable=False),
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),

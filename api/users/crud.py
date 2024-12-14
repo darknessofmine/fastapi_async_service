@@ -2,12 +2,12 @@ from sqlalchemy import exists, select, Sequence
 from sqlalchemy.orm import joinedload, load_only, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from . import schemas
+from .schemas import UserCreate, UserUpdate, UserUpdatePartial
 from core.models import User, Post
 
 
 async def create_user(session: AsyncSession,
-                      user_in: schemas.UserCreate) -> User | None:
+                      user_in: UserCreate) -> User | None:
     user = User(**user_in.model_dump())
     session.add(user)
     await session.commit()
@@ -76,8 +76,9 @@ async def get_user_by_username_with_posts(session: AsyncSession,
 
 async def update_user(session: AsyncSession,
                       user: User,
-                      user_update: schemas.UserUpdate) -> User:
-    for key, value in user_update.model_dump().items():
+                      user_update: UserUpdate | UserUpdatePartial,
+                      partial: bool = False) -> User:
+    for key, value in user_update.model_dump(exclude_unset=partial).items():
         setattr(user, key, value)
     await session.commit()
     return user

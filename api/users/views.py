@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
 from . import utils as user_utils
-from .schemas import UserCreate, UserUpdate
+from .schemas import UserCreate, UserUpdate, UserUpdatePartial
 from api.auth import utils as auth_utils
 from core.db_helper import db_helper
 from core.models import User
@@ -65,6 +65,24 @@ async def update_user(
         user=user,
         user_update=user_update,
         session=session,
+    )
+
+
+@router.patch("/{username}", status_code=status.HTTP_200_OK)
+async def update_user_partial(
+    username: str,
+    user_update: UserUpdatePartial,
+    user: User = Depends(user_utils.get_user_by_username_or_404),
+    payload: dict = Depends(auth_utils.get_current_token_payload),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    """DELETE `USERNAME` FROM FUNCTION PARAMS"""
+    user_utils.user_is_curr_user_or_403(user=user, payload=payload)
+    return await crud.update_user(
+        user=user,
+        user_update=user_update,
+        session=session,
+        partial=True,
     )
 
 

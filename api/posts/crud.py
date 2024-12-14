@@ -10,7 +10,7 @@ async def create_post(session: AsyncSession,
                       post_in: PostCreate,
                       author_id: int) -> Post | None:
     post_dict = post_in.model_dump()
-    post_dict.update({"user_id": author_id})
+    post_dict["user_id"] = author_id
     post = Post(**post_dict)
     session.add(post)
     await session.commit()
@@ -29,12 +29,11 @@ async def get_post_by_id(session: AsyncSession,
 
 
 async def get_posts_with_authors(session: AsyncSession) -> Sequence[Post]:
-    stmt = (
+    return await session.scalars(
         select(Post)
         .options(joinedload(Post.user))
         .order_by(Post.id)
     )
-    return await session.scalars(stmt)
 
 
 async def get_post_by_id_and_username_with_author(
@@ -47,8 +46,7 @@ async def get_post_by_id_and_username_with_author(
         .where(and_(
             Post.user.has(username=username),
             (Post.id == post_id)
-        ))
-        .options(
+        )).options(
             joinedload(Post.user),
             joinedload(Post.comments)
         )
@@ -65,8 +63,7 @@ async def get_post_by_id_and_username(
         .where(
             and_(Post.user.has(username=username),
                  Post.id == post_id)
-        )
-        .options(
+        ).options(
             joinedload(Post.user)
         )
     )

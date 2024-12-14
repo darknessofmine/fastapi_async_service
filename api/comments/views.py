@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Form, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import schemas
@@ -16,7 +16,7 @@ router = APIRouter(tags=["comments"])
              response_model=schemas.CommentResponse,
              status_code=status.HTTP_201_CREATED)
 async def create_comment(
-    comment_in: schemas.CommentCreate,
+    comment_in: schemas.CommentCreate = Form(),
     post: Post = Depends(post_utils.get_post_by_id_and_username),
     payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
@@ -34,7 +34,7 @@ async def create_comment(
               response_model=schemas.CommentResponse,
               status_code=status.HTTP_200_OK)
 async def update_comment(
-    comment_in: schemas.CommentUpdate,
+    comment_in: schemas.CommentUpdate = Form(),
     comment: Comment = Depends(comment_utils.get_comment_or_404),
     payload: dict = Depends(auth_utils.get_current_token_payload),
     session: AsyncSession = Depends(db_helper.session_dependency),
