@@ -33,6 +33,6 @@ class Subscription(Base):
         foreign_keys=[sub_id],
         lazy="joined",
     )
-    sub_tier: Mapped["SubTier"] | None = relationship(
+    sub_tier: Mapped["SubTier"] = relationship(
         back_populates="subscription",
     )

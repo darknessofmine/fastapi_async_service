@@ -5,6 +5,7 @@ from core.models import SubTier
 
 
 async def create_sub_tier(sub_tier_in: schemas.SubTierCreate,
+                          user_id: int,
                           session: AsyncSession) -> SubTier:
     sub_tier = SubTier(**sub_tier_in.model_dump())
     session.add(sub_tier)

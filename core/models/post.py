@@ -20,6 +20,7 @@ class Post(Base):
         server_default="",
     )
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    sub_tier_id: Mapped[int] = mapped_column(ForeignKey("sub_tiers.id"))
 
     user: Mapped["User"] = relationship(back_populates="posts")
     comments: Mapped[list["Comment"] | None] = relationship()

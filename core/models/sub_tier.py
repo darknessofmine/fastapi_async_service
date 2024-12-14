@@ -21,9 +21,8 @@ class SubTier(Base):
 
     title: Mapped[str] = mapped_column(String(50))
     body: Mapped[str] = mapped_column(String(500))
-    price: Mapped[int] = mapped_column(nullable=True)
+    price: Mapped[int] = mapped_column(default=0)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
     subscription_id: Mapped[int] = mapped_column(
         ForeignKey("subscriptions.id"),
     )
