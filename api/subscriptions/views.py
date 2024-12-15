@@ -74,6 +74,11 @@ async def change_subscription_tier(
     session: AsyncSession = Depends(db_helper.session_dependency),
     subscription: Subscription = Depends(sub_utils.get_subscription)
 ):
+    if subscription.sub_tier_id == new_sub_tier_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You already have this level of subscription!"
+        )
     sub_tier_utils.author_owns_chosen_sub_tier_or_404(
         sub_tiers=author.sub_tiers,
         sub_tier_id=new_sub_tier_id,
