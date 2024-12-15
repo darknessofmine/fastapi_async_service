@@ -21,10 +21,10 @@ async def create_sub_tier(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     user_id = payload.get("id")
-    return await crud.create_sub_tier(
+    return await sub_tier_utils.create_sub_or_uq_constraint_exc(
         sub_tier_in=sub_tier_in,
         user_id=user_id,
-        session=session,
+        session=session
     )
 
 

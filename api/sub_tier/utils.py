@@ -1,9 +1,11 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Path, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
+from . import schemas
 from core.db_helper import db_helper
 from core.models import SubTier
 
@@ -45,3 +47,21 @@ def author_owns_chosen_sub_tier_or_404(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="User dosn't have this subscription.",
     )
+
+
+async def create_sub_or_uq_constraint_exc(
+    sub_tier_in: schemas.SubTierCreate,
+    user_id: int,
+    session: AsyncSession,
+) -> SubTier:
+    try:
+        return await crud.create_sub_tier(
+            sub_tier_in=sub_tier_in,
+            user_id=user_id,
+            session=session,
+        )
+    except IntegrityError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error.__dict__["orig"]),
+        )

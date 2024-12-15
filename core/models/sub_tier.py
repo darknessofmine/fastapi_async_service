@@ -17,6 +17,10 @@ class SubTier(Base):
             "user_id", "title",
             name="unique_title_user_id",
         ),
+        UniqueConstraint(
+            "user_id", "price",
+            name="unique_price_user_id"
+        ),
     )
 
     title: Mapped[str] = mapped_column(String(50))
