@@ -53,6 +53,22 @@ async def get_user_with_posts_by_username_or_404(
     return user
 
 
+async def get_author_by_id_with_sub_tiers_or_404(
+    author_id: Annotated[int, Path],
+    session: AsyncSession = Depends(db_helper.session_dependency),
+) -> User:
+    user = await crud.get_user_by_id_with_sub_tiers(
+        user_id=author_id,
+        session=session,
+    )
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found."
+        )
+    return user
+
+
 async def get_user_by_id_or_404(
     user_id: int,
     session: AsyncSession
