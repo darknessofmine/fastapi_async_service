@@ -79,6 +79,14 @@ async def update_post(session: AsyncSession,
     return post
 
 
+async def update_post_tier(session: AsyncSession,
+                           post: Post,
+                           sub_tier_id: int) -> Post:
+    setattr(post, "sub_tier_id", sub_tier_id)
+    await session.commit()
+    return post
+
+
 async def delete_post(session: AsyncSession,
                       post: Post) -> None:
     await session.delete(post)

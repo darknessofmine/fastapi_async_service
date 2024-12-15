@@ -61,7 +61,6 @@ async def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid token type: {token_type}. Expected: access.",
         )
-
     user_id = payload.get("id")
     user = await crud.get_user_by_id(session=session, user_id=user_id)
     if user is None:

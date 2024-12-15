@@ -33,6 +33,7 @@ class PostUpdate(PostCreate):
 class PostUpdatePartial(PostCreate):
     title: str | None = None
     text: str | None = None
+    sub_tier_id: int | None = None
 
 
 class PostRelated(PostBase):
