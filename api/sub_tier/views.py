@@ -21,7 +21,7 @@ async def create_sub_tier(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     user_id = payload.get("id")
-    return await sub_tier_utils.create_sub_or_uq_constraint_exc(
+    return await sub_tier_utils.create_sub_tier_or_uq_constraint_exc(
         sub_tier_in=sub_tier_in,
         user_id=user_id,
         session=session
@@ -38,7 +38,7 @@ async def update_sub_tier(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     sub_tier_utils.user_is_author_or_403(payload=payload, sub_tier=sub_tier)
-    return await crud.update_sub_tier(
+    return await sub_tier_utils.update_sub_tier_or_uq_constraint_exc(
         sub_tier_upd=sub_tier_update,
         sub_tier=sub_tier,
         session=session,
@@ -55,7 +55,7 @@ async def update_sub_tier_partial(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     sub_tier_utils.user_is_author_or_403(payload=payload, sub_tier=sub_tier)
-    return await crud.update_sub_tier(
+    return await sub_tier_utils.update_sub_tier_or_uq_constraint_exc(
         sub_tier_upd=sub_tier_update,
         sub_tier=sub_tier,
         session=session,

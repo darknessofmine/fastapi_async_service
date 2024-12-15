@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
-from . import schemas
+from .schemas import SubTierCreate, SubTierUpdate, SubTierUpdatePartial
 from core.db_helper import db_helper
 from core.models import SubTier
 
@@ -49,8 +49,8 @@ def author_owns_chosen_sub_tier_or_404(
     )
 
 
-async def create_sub_or_uq_constraint_exc(
-    sub_tier_in: schemas.SubTierCreate,
+async def create_sub_tier_or_uq_constraint_exc(
+    sub_tier_in: SubTierCreate,
     user_id: int,
     session: AsyncSession,
 ) -> SubTier:
@@ -59,6 +59,26 @@ async def create_sub_or_uq_constraint_exc(
             sub_tier_in=sub_tier_in,
             user_id=user_id,
             session=session,
+        )
+    except IntegrityError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error.__dict__["orig"]),
+        )
+
+
+async def update_sub_tier_or_uq_constraint_exc(
+    sub_tier_upd: SubTierUpdate | SubTierUpdatePartial,
+    sub_tier: SubTier,
+    session: AsyncSession,
+    partial: bool = False,
+) -> SubTier:
+    try:
+        return await crud.update_sub_tier(
+            sub_tier_upd=sub_tier_upd,
+            sub_tier=sub_tier,
+            session=session,
+            partial=partial,
         )
     except IntegrityError as error:
         raise HTTPException(
