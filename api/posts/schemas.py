@@ -23,7 +23,7 @@ class Post(PostBase):
 
 
 class PostCreate(PostBase):
-    ...
+    sub_tier_id: int | None = None
 
 
 class PostUpdate(PostCreate):
@@ -39,3 +39,8 @@ class PostUpdatePartial(PostCreate):
 class PostRelated(PostBase):
     id: int
     comments: list["CommentResponse"]
+
+
+class PostResponse(PostBase):
+    user_id: int
+    sub_tier_id: int

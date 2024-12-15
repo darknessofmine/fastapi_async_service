@@ -76,7 +76,9 @@ async def delete_post(
     await crud.delete_post(post=post, session=session)
 
 
-@router.patch("/posts/{post_id}/update-tier", status_code=status.HTTP_200_OK)
+@router.patch("/posts/{post_id}/update-tier",
+              response_model=schemas.PostResponse,
+              status_code=status.HTTP_200_OK)
 async def update_post_tier(
     sub_tier_id: int = Form(),
     post: Post = Depends(post_utils.get_post_by_id),

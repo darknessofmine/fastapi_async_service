@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Form, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import crud
+from . import schemas
 from . import utils as sub_utils
 from api.auth import utils as auth_utils
 from api.sub_tier import utils as sub_tier_utils
@@ -14,6 +15,7 @@ router = APIRouter(tags=["subscription"])
 
 
 @router.post("/{author_id}/subscribe",
+             response_model=schemas.SubscriptionResponse,
              status_code=status.HTTP_200_OK)
 async def subscribe(
     sub_tier_id: int = Form(),
@@ -63,6 +65,7 @@ async def unsub(
 
 
 @router.patch("/{author_id}/subscribe/change-tier",
+              response_model=schemas.SubscriptionResponse,
               status_code=status.HTTP_200_OK)
 async def change_subscription_tier(
     new_sub_tier_id: int,
