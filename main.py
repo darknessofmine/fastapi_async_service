@@ -13,9 +13,9 @@ app = FastAPI()
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(sub_router)
+app.include_router(sub_tier_router)
 app.include_router(post_router)
 app.include_router(comment_router)
-app.include_router(sub_tier_router)
 
 
 if __name__ == "__main__":

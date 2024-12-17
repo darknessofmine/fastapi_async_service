@@ -28,6 +28,20 @@ async def create_sub_tier(
     )
 
 
+@router.get("/subsciption/{username}",
+            response_model=list[schemas.SubTierResponse],
+            status_code=status.HTTP_200_OK)
+async def get_sub_tiers_by_username(
+    username: str,
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    sub_tiers = await crud.get_sub_tiers_by_username(
+        username=username,
+        session=session,
+    )
+    return sub_tiers.all()
+
+
 @router.put("/subscription/{sub_id}",
             response_model=schemas.SubTierResponse,
             status_code=status.HTTP_200_OK)

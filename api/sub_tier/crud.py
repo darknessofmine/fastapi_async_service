@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, Sequence
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import SubTierCreate, SubTierUpdate, SubTierUpdatePartial
@@ -21,6 +21,19 @@ async def get_sub_tier(sub_tier_id: int,
     return await session.scalar(
         select(SubTier)
         .where(SubTier.id == sub_tier_id)
+    )
+
+
+async def get_sub_tiers_by_username(
+    username: str,
+    session: AsyncSession,
+) -> Sequence[SubTier] | None:
+    return await session.scalars(
+        select(SubTier)
+        .where(
+            SubTier.user.has(username=username)
+        )
+        .order_by(SubTier.price)
     )
 
 
