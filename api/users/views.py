@@ -51,6 +51,18 @@ async def get_user_by_username(
     return user
 
 
+@router.get("/subscriptions/available")
+async def get_all_users_subbed_wit_posts_available(
+    user: User = Depends(auth_utils.get_current_user),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    users = await crud.get_users_with_posts_available(
+        user_id=user.id,
+        session=session,
+    )
+    return users.unique().all()
+
+
 @router.put("/{username}", status_code=status.HTTP_200_OK)
 async def update_user(
     username: str,

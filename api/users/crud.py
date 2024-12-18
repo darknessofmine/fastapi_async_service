@@ -1,9 +1,9 @@
 from sqlalchemy import select, Sequence
-from sqlalchemy.orm import joinedload, load_only, selectinload
+from sqlalchemy.orm import joinedload, load_only, selectinload, contains_eager
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import UserCreate, UserUpdate, UserUpdatePartial
-from core.models import User, Post
+from core.models import Post, Subscription, User
 
 
 async def create_user(session: AsyncSession,
@@ -115,5 +115,35 @@ async def get_user_by_id_with_sub_tiers(
         .where(User.id == user_id)
         .options(
             joinedload(User.sub_tiers)
+        )
+    )
+
+
+async def get_users_with_posts_available(
+    user_id: int,
+    session: AsyncSession,
+) -> Sequence[User] | None:
+    return await session.scalars(
+        select(Subscription)
+        .where(
+            Subscription.sub_id == user_id
+        )
+        .join(Subscription.author)
+        .options(contains_eager(
+            Subscription.author,
+        ))
+        .join(User.posts)
+        .options(contains_eager(
+            Subscription.author,
+            User.posts,
+        ))
+        .outerjoin(Post.comments)
+        .options(contains_eager(
+            Subscription.author,
+            User.posts,
+            Post.comments,
+        ))
+        .filter(
+            Post.sub_tier_id == Subscription.sub_tier_id
         )
     )

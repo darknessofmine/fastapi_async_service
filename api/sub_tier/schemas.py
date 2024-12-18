@@ -22,4 +22,4 @@ class SubTierUpdatePartial(SubTierUpdate):
 
 
 class SubTierResponse(SubTierBase):
-    ...
+    id: int
